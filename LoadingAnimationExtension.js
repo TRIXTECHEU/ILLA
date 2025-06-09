@@ -8,13 +8,14 @@ window.LoadingAnimationExtension = {
     const phase = payload.phase || 'output'; // default to output if not specified
 
     // Normalize and detect language
-    const incomingLang = (payload.lang || 'cs').toLowerCase();
-    let lang;
-    if (incomingLang.includes('cs')) lang = 'cs';
-    else if (incomingLang.includes('en')) lang = 'en';
-    else if (incomingLang.includes('de')) lang = 'de';
-    else if (incomingLang.includes('uk')) lang = 'uk';
-    else lang = 'cs'; // default to Czech
+    const incomingLang = (payload.lang || 'cs').toLowerCase().trim();
+
+    if (incomingLang.includes('cs') || incomingLang.includes('czech')) lang = 'cs';
+    else if (incomingLang.includes('en') || incomingLang.includes('english')) lang = 'en';
+    else if (incomingLang.includes('de') || incomingLang.includes('german')) lang = 'de';
+    else if (incomingLang.includes('uk') || incomingLang.includes('ukrainian')) lang = 'uk';
+    else lang = 'cs'; // fallback
+
 
     // Normalize type
     const type = (payload.type || 'SMT').toUpperCase();
