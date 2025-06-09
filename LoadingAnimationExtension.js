@@ -445,50 +445,52 @@ window.LoadingAnimationExtension = {
         // The last message will remain visible
       }, totalDuration);
 
-      // Enhanced cleanup observer – removes animation if deleted manually
-const observer = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    mutation.removedNodes.forEach((node) => {
-      if (node === container || node.contains(container)) {
-        if (intervalId) clearInterval(intervalId);
-        clearTimeout(animationTimeoutId); // Clear the animation timeout as well
-        observer.disconnect();
+      // Enhanced cleanup observer
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.removedNodes.forEach((node) => {
+            if (node === container || node.contains(container)) {
+              if (intervalId) clearInterval(intervalId);
+              clearTimeout(animationTimeoutId);
+              observer.disconnect();
+            }
+          });
+        });
+      });
+
+      observer.observe(element.parentElement || document.body, {
+        childList: true,
+        subtree: true
+      });
+
+      // NEW: Stop animation if real AI response is already rendered
+      const responseObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === 1 && node.classList.contains('vfrc-message--ai')) {
+              // Stop spinner if AI has responded
+              if (intervalId) clearInterval(intervalId);
+              clearTimeout(animationTimeoutId);
+              spinnerAnimationContainer.classList.add('hide');
+              responseObserver.disconnect();
+              return;
+            }
+          });
+        });
+      });
+
+      responseObserver.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+
+      // Append container to DOM
+      if (element) {
+        element.appendChild(container);
+        void container.offsetHeight; // Force reflow
       }
-    });
-  });
-});
-
-observer.observe(element.parentElement || document.body, {
-  childList: true,
-  subtree: true
-});
-
-// Append to DOM
-if (element) {
-  element.appendChild(container);
-  void container.offsetHeight; // Force reflow
-}
-
-// ⏹ Stop animation as soon as assistant responds
-const responseObserver = new MutationObserver((mutations) => {
-  for (const mutation of mutations) {
-    for (const node of mutation.addedNodes) {
-      if (
-        node.nodeType === 1 &&
-        node.classList.contains('vfrc-message--ai') // <- přizpůsob si třídu, pokud používáš jinou
-      ) {
-        if (intervalId) clearInterval(intervalId);
-        clearTimeout(animationTimeoutId);
-        spinnerAnimationContainer.classList.add('hide');
-        responseObserver.disconnect();
-        return;
-      }
+    } catch (error) {
+      // Silently handle errors
     }
   }
-});
-
-responseObserver.observe(document.body, {
-  childList: true,
-  subtree: true
-});
-
+};
