@@ -5,67 +5,57 @@ window.LoadingAnimationExtension = {
     trace.type === 'ext_loadingAnimation' || trace.payload?.name === 'ext_loadingAnimation',
   render: ({ trace, element }) => {
     const payload = trace.payload || {};
-    const phase = payload.phase || 'output'; // default to output if not specified
+    const phase = payload.phase || 'output';
 
-    // Normalize and detect language
     const incomingLang = (payload.lang || 'cs').toLowerCase().trim();
 
     if (incomingLang.includes('cs') || incomingLang.includes('czech')) lang = 'cs';
     else if (incomingLang.includes('en') || incomingLang.includes('english')) lang = 'en';
     else if (incomingLang.includes('de') || incomingLang.includes('german')) lang = 'de';
     else if (incomingLang.includes('uk') || incomingLang.includes('ukrainian')) lang = 'uk';
-    else lang = 'cs'; // fallback
+    else lang = 'cs';
 
 
-    // Normalize type
     const type = (payload.type || 'SMT').toUpperCase();
 
-    // Define fixed durations for each phase (in milliseconds)
-    // const phaseDurations = {
-    //   analysis: 3000,  // 3 seconds
-    //   output: 9000,    // 9 seconds for multiple messages
-    //   rewrite: 3000    // 3 seconds
-    // };
-
-    // Message sequences for different phases and types
     const messageSequences = {
       cs: {
         analysis: {
           DEFAULT: ['Vydržte moment'],
-          SMT: ['Analyzuji dotaz.', 'Vydržte moment'],
-          SWEARS: ['Analyzuji dotaz.', 'Vydržte moment'],
-          OTHER: ['Analyzuji dotaz.', 'Vydržte moment'],
-          KB: ['Analyzuji dotaz.', 'Zpracovávám váš dotaz.', 'Vydržte moment'],
-          KB_WS: ['Analyzuji dotaz.', 'Zpracovávám váš dotaz.', 'Vydržte moment']
+          SMT: ['Analyzuji dotaz', 'Vydržte moment'],
+          SWEARS: ['Analyzuji dotaz', 'Vydržte moment'],
+          OTHER: ['Analyzuji dotaz', 'Vydržte moment'],
+          KB: ['Analyzuji dotaz', 'Zpracovávám váš dotaz', 'Vydržte moment'],
+          KB_WS: ['Analyzuji dotaz', 'Zpracovávám váš dotaz', 'Vydržte moment']
         },
-        rewrite: ['Zpracovávám Váš dotaz.'],
+        rewrite: ['Zpracovávám Váš dotaz'],
         output: {
-          SMT: ['Dokončuji odpověď.'],
+          SMT: ['Dokončuji odpověď'],
           KB_WS: [
-            'Hledám v databázi.',
-            'Prohledávám webové zdroje.',
-            'Připravuji odpověď.',
-            'Píši odpověď.'
+            'Hledám v databázi',
+            'Prohledávám webové zdroje',
+            'Připravuji odpověď',
+            'Píši odpověď'
           ],
-          OTHER: ['Nacházím nevhodný výraz.'],
-          SWEARS: ['Nacházím nevhodný výraz.'],
+          OTHER: ['Nacházím nevhodný výraz'],
+          SWEARS: ['Nacházím nevhodný výraz'],
           KB: [
-            'Hledám v databázi.',
-            'Připravuji odpověď.',
-            'Píši odpověď.'
+            'Hledám v databázi',
+            'Připravuji odpověď',
+            'Píši odpověď'
           ]
         },
         all: {
           KB: [
-            'Prohledávám svou databázi.',
-            'Ověřuji informace.',
-            'Připravuji svoji odpověď.'
+            'Prohledávám svou databázi',
+            'Ověřuji informace',
+            'Připravuji svoji odpověď'
           ],
           KB_WS: [
-            'Prohledávám svou databázi.',
-            'Prohledávám webové zdroje.',
-            'Ověřuji informace.',
-            'Připravuji svoji odpověď.'
+            'Prohledávám svou databázi',
+            'Prohledávám webové zdroje',
+            'Ověřuji informace',
+            'Připravuji svoji odpověď'
           ]
         }
       },
@@ -191,11 +181,9 @@ window.LoadingAnimationExtension = {
       }
     };
 
-    // Error handling for missing messages or duration calculation
     try {
-      const customDurationSeconds = payload.duration; // From payload
+      const customDurationSeconds = payload.duration;
 
-      // Determine messages based on phase and type
       let messages;
       if (phase === 'all' && (type === 'KB' || type === 'KB_WS')) {
         messages = messageSequences[lang]?.all?.[type];
@@ -207,26 +195,21 @@ window.LoadingAnimationExtension = {
         messages = messageSequences[lang]?.[phase];
       }
 
-      // Exit if no messages are found or if the message array is empty
       if (!messages || messages.length === 0) {
-        // console.warn(`LoadingAnimationExtension: No messages or empty message array for lang='${lang}', phase='${phase}', type='${type}'`);
         return;
       }
 
-      // Determine totalDuration for the animation
       let totalDuration;
       if (customDurationSeconds !== undefined && typeof customDurationSeconds === 'number' && customDurationSeconds > 0) {
-        totalDuration = customDurationSeconds * 1000; // Use custom duration from payload (in ms)
-        // console.log(`LoadingAnimationExtension: Using custom duration from payload: ${customDurationSeconds}s (${totalDuration}ms)`);
+        totalDuration = customDurationSeconds * 1000;
       } else {
-        // Automatic duration calculation based on phase and type
         if (phase === 'analysis') {
           if (type === 'SMT' || type === 'SWEARS' || type === 'OTHER') {
             totalDuration = 4000;
           } else if (type === 'KB' || type === 'KB_WS') {
             totalDuration = 12000;
           } else {
-            totalDuration = 3000; // Default for analysis if type doesn't match
+            totalDuration = 3000;
           }
         } else if (phase === 'output') {
           if (type === 'SMT' || type === 'SWEARS' || type === 'OTHER') {
@@ -236,20 +219,15 @@ window.LoadingAnimationExtension = {
           } else if (type === 'KB_WS') {
             totalDuration = 23000;
           } else {
-            totalDuration = 3000; // Default for output if type doesn't match
+            totalDuration = 3000;
           }
         } else {
-          // Fallback to a general default duration if phase is not analysis or output
-          // or if payload.duration is not provided or invalid for other phases
-          totalDuration = 3000; // Default to 3 seconds
+          totalDuration = 3000;
         }
-        // console.log(`LoadingAnimationExtension: Using automatic duration for lang='${lang}', phase='${phase}', type='${type}': ${totalDuration}ms`);
       }
 
-      // Calculate interval between messages to distribute evenly
-      const messageInterval = totalDuration / messages.length; // messages.length is guaranteed to be > 0 here
+      const messageInterval = totalDuration / messages.length;
 
-      // Create container div with class for styling
       const container = document.createElement('div');
       container.className = 'vfrc-message vfrc-message--extension LoadingAnimation';
 
@@ -268,25 +246,24 @@ window.LoadingAnimationExtension = {
           pointer-events: none;
         }
 
-        /* Updated styling for the main loading container (inspired by Perplexity's reasoning-section) */
         .loading-box {
           display: flex;
           align-items: center;
-          gap: 8px; /* Reduced gap */
-          padding: 8px 12px; /* Reduced padding */
+          gap: 8px;
+          padding: 8px 12px;
           margin: 0;
           width: 100%;
           box-sizing: border-box;
           background-color: #F9FAFB;
           border-radius: 12px;
-          /* border: 1px solid #E5E7EB; /* Optional: if a subtle border is desired */
+          border: 1px solid #E5E7EB;
         }
 
         .loading-text {
-          color: rgba(26, 30, 35, 0.7); /* Slightly darker for better contrast on new bg */
-          font-size: 12px; /* Increased font size slightly */
-          line-height: 1.3; /* Adjusted line height for better vertical centering */
-          font-family: var(--_1bof89na); /* Assuming this is a Voiceflow variable for font */
+          color: rgba(26, 30, 35, 0.7);
+          font-size: 12px;
+          line-height: 1.3;
+          font-family: var(--_1bof89na);
           position: relative;
           display: flex;
           flex-direction: column;
@@ -309,7 +286,6 @@ window.LoadingAnimationExtension = {
           transform: translateY(5px);
         }
 
-        /* New rotating point spinner animation */
         @keyframes loading-spinner-spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
@@ -317,7 +293,7 @@ window.LoadingAnimationExtension = {
 
         .rotating-point-spinner {
           position: relative;
-          width: 16px; /* Spinner size */
+          width: 16px;
           height: 16px;
           animation: loading-spinner-spin 0.9s linear infinite;
           flex-shrink: 0;
@@ -325,7 +301,6 @@ window.LoadingAnimationExtension = {
           opacity: 1;
         }
 
-        /* The track of the circle */
         .rotating-point-spinner::before {
           content: "";
           box-sizing: border-box;
@@ -335,67 +310,55 @@ window.LoadingAnimationExtension = {
           width: 100%;
           height: 100%;
           border-radius: 50%;
-          border: 2px solid rgba(0, 0, 0, 0.12); /* Light grey track */
+          border: 2px solid rgba(0, 0, 0, 0.12);
         }
 
-        /* The thicker rotating point */
         .rotating-point-spinner::after {
           content: "";
           box-sizing: border-box;
           position: absolute;
-          width: 5px; /* Size of the thicker point */
+          width: 5px;
           height: 5px;
-          background-color: var(--spinner-point-colour, #696969); /* Use CSS var with dark grey fallback */
+          background-color: var(--spinner-point-colour, #696969);
           border-radius: 50%;
-          /* Position it at 12 o'clock on the track's centerline */
           top: -1.5px; 
-          left: calc(50% - 2.5px); /* (ContainerWidth/2 - PointWidth/2) */
+          left: calc(50% - 2.5px);
         }
 
         .rotating-point-spinner.hide {
           opacity: 0;
           visibility: hidden;
           width: 0 !important;
-          display: none; /* Completely remove from layout flow */
-          /* margin-right: 0 !important; // Not strictly needed */
+          display: none;
+          /* margin-right: 0 !important;
         }
       `;
       container.appendChild(style);
 
-      // Create the main styled box (renamed from loadingContainer)
       const loadingBox = document.createElement('div');
       loadingBox.className = 'loading-box';
 
-      // Create new spinner animation container
       const spinnerAnimationContainer = document.createElement('div');
       spinnerAnimationContainer.className = 'rotating-point-spinner';
 
-      // Get custom color from payload or use default
       const mainColour = trace.payload?.mainColour;
       if (mainColour && typeof mainColour === 'string') {
-        // Validate HEX color format (e.g., #E21D1F or #F00)
         if (/^#([0-9A-Fa-f]{3}){1,2}$/.test(mainColour)) {
           spinnerAnimationContainer.style.setProperty('--spinner-point-colour', mainColour);
         }
       }
 
-      // No need to create individual dots anymore
-      // The spinner is self-contained via CSS pseudo-elements
-
-      // Append the spinner animation first
       loadingBox.appendChild(spinnerAnimationContainer);
 
-      // Then create and append text element
       const textElement = document.createElement('span');
       textElement.className = 'loading-text';
       loadingBox.appendChild(textElement);
 
-      container.appendChild(loadingBox); // Append the styled box to the main container
+      container.appendChild(loadingBox);
 
       let currentIndex = 0;
 
       const updateText = (newText) => {
-        // Ensure textElement is the one inside loadingBox for consistency
         const currentTextElement = loadingBox.querySelector('.loading-text');
         if (!currentTextElement) return;
 
@@ -412,40 +375,33 @@ window.LoadingAnimationExtension = {
         }, 300);
       };
 
-      // Initial text update
       updateText(messages[currentIndex]);
 
-      // Set up interval for multiple messages
       let intervalId = null;
       if (messages.length > 1) {
         intervalId = setInterval(() => {
-          if (currentIndex < messages.length - 1) { // Check if not the last message
+          if (currentIndex < messages.length - 1) {
             currentIndex++;
             updateText(messages[currentIndex]);
           } else {
-            // Reached the last message, stop cycling new messages
             if (intervalId) {
               clearInterval(intervalId);
-              intervalId = null; // Mark as cleared
+              intervalId = null;
             }
           }
         }, messageInterval);
       }
 
-      // Stop animation (spinner) and message cycling after totalDuration
       const animationTimeoutId = setTimeout(() => {
-        if (intervalId) { // If message cycling interval is still active
+        if (intervalId) {
           clearInterval(intervalId);
           intervalId = null;
         }
-        // Hide only the spinner animation, not the whole container or text
         if (spinnerAnimationContainer) {
           spinnerAnimationContainer.classList.add('hide');
         }
-        // The last message will remain visible
       }, totalDuration);
 
-      // Enhanced cleanup observer
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           mutation.removedNodes.forEach((node) => {
@@ -463,12 +419,10 @@ window.LoadingAnimationExtension = {
         subtree: true
       });
 
-      // NEW: Stop animation if real AI response is already rendered
       const responseObserver = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           mutation.addedNodes.forEach((node) => {
             if (node.nodeType === 1 && node.classList.contains('vfrc-message--ai')) {
-              // Stop spinner if AI has responded
               if (intervalId) clearInterval(intervalId);
               clearTimeout(animationTimeoutId);
               spinnerAnimationContainer.classList.add('hide');
@@ -484,13 +438,11 @@ window.LoadingAnimationExtension = {
         subtree: true
       });
 
-      // Append container to DOM
       if (element) {
         element.appendChild(container);
-        void container.offsetHeight; // Force reflow
+        void container.offsetHeight;
       }
     } catch (error) {
-      // Silently handle errors
     }
   }
 };
