@@ -1,5 +1,11 @@
 /* TrixTech s.r.o. @2025 */
 
+/* 0) Layering */
+/* Keep the chat widget above all page content */
+.vfrc-widget {
+  z-index: 999999 !important;
+}
+
 div[class*="vfrc-header"] img.vfrc-avatar {
   display: block !important;
   width: 150px !important;
