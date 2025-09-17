@@ -266,7 +266,7 @@ button.vfrc-button[label="Cancel"]{
   display: block !important;
   width: calc(100% - 30px) !important;
   margin: 15px 15px 0 !important;
-  height: 170px !important;
+  height: 140px !important;
   object-fit: cover !important;
   border-radius: 15px 15px 0 0 !important;
   box-sizing: border-box !important;
