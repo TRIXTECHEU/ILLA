@@ -333,7 +333,7 @@ window.LoadingAnimationExtension = {
           /* margin-right: 0 !important;
         }
       `;
-      container.appendChild(style);
+     container.appendChild(style);
 
       const loadingBox = document.createElement('div');
       loadingBox.className = 'loading-box';
@@ -341,12 +341,7 @@ window.LoadingAnimationExtension = {
       const spinnerAnimationContainer = document.createElement('div');
       spinnerAnimationContainer.className = 'rotating-point-spinner';
 
-      const mainColour = trace.payload?.mainColour;
-      if (mainColour && typeof mainColour === 'string') {
-        if (/^#([0-9A-Fa-f]{3}){1,2}$/.test(mainColour)) {
-          spinnerAnimationContainer.style.setProperty('--spinner-point-colour', mainColour);
-        }
-      }
+      spinnerAnimationContainer.style.setProperty('--spinner-point-colour', '#e47d2d');
 
       loadingBox.appendChild(spinnerAnimationContainer);
 
@@ -357,24 +352,19 @@ window.LoadingAnimationExtension = {
       container.appendChild(loadingBox);
 
       let currentIndex = 0;
-
       const updateText = (newText) => {
         const currentTextElement = loadingBox.querySelector('.loading-text');
         if (!currentTextElement) return;
-
         currentTextElement.classList.add('changing');
-
         setTimeout(() => {
           currentTextElement.textContent = newText;
           currentTextElement.classList.remove('changing');
           currentTextElement.classList.add('entering');
-
           requestAnimationFrame(() => {
             currentTextElement.classList.remove('entering');
           });
         }, 300);
       };
-
       updateText(messages[currentIndex]);
 
       let intervalId = null;
@@ -413,7 +403,6 @@ window.LoadingAnimationExtension = {
           });
         });
       });
-
       observer.observe(element.parentElement || document.body, {
         childList: true,
         subtree: true
@@ -427,12 +416,10 @@ window.LoadingAnimationExtension = {
               clearTimeout(animationTimeoutId);
               spinnerAnimationContainer.classList.add('hide');
               responseObserver.disconnect();
-              return;
             }
           });
         });
       });
-
       responseObserver.observe(document.body, {
         childList: true,
         subtree: true
@@ -443,6 +430,7 @@ window.LoadingAnimationExtension = {
         void container.offsetHeight;
       }
     } catch (error) {
+      console.error('LoadingAnimationExtension error:', error);
     }
   }
 };
