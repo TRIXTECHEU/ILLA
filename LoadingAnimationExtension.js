@@ -1,3 +1,5 @@
+/* TrixTech s.r.o. @2026 */
+
 window.LoadingAnimationExtension = {
   name: 'LoadingAnimation',
   type: 'response',
@@ -7,6 +9,7 @@ window.LoadingAnimationExtension = {
     const payload = trace.payload || {};
     const phase = payload.phase || 'output';
 
+    let lang = 'cs';
     const incomingLang = (payload.lang || 'cs').toLowerCase().trim();
 
     if (incomingLang.includes('cs') || incomingLang.includes('czech')) lang = 'cs';
@@ -14,7 +17,6 @@ window.LoadingAnimationExtension = {
     else if (incomingLang.includes('de') || incomingLang.includes('german')) lang = 'de';
     else if (incomingLang.includes('uk') || incomingLang.includes('ukrainian')) lang = 'uk';
     else lang = 'cs';
-
 
     const type = (payload.type || 'SMT').toUpperCase();
 
@@ -321,7 +323,7 @@ window.LoadingAnimationExtension = {
           height: 5px;
           background-color: var(--spinner-point-colour, #696969);
           border-radius: 50%;
-          top: -1.5px; 
+          top: -1.5px;
           left: calc(50% - 2.5px);
         }
 
@@ -330,18 +332,16 @@ window.LoadingAnimationExtension = {
           visibility: hidden;
           width: 0 !important;
           display: none;
-          /* margin-right: 0 !important;
         }
       `;
-     container.appendChild(style);
+      container.appendChild(style);
 
       const loadingBox = document.createElement('div');
       loadingBox.className = 'loading-box';
 
       const spinnerAnimationContainer = document.createElement('div');
       spinnerAnimationContainer.className = 'rotating-point-spinner';
-
-      spinnerAnimationContainer.style.setProperty('--spinner-point-colour', '#e47d2d');
+      spinnerAnimationContainer.style.setProperty('--spinner-point-colour');
 
       loadingBox.appendChild(spinnerAnimationContainer);
 
@@ -353,15 +353,14 @@ window.LoadingAnimationExtension = {
 
       let currentIndex = 0;
       const updateText = (newText) => {
-        const currentTextElement = loadingBox.querySelector('.loading-text');
-        if (!currentTextElement) return;
-        currentTextElement.classList.add('changing');
+        if (!textElement) return;
+        textElement.classList.add('changing');
         setTimeout(() => {
-          currentTextElement.textContent = newText;
-          currentTextElement.classList.remove('changing');
-          currentTextElement.classList.add('entering');
+          textElement.textContent = newText;
+          textElement.classList.remove('changing');
+          textElement.classList.add('entering');
           requestAnimationFrame(() => {
-            currentTextElement.classList.remove('entering');
+            textElement.classList.remove('entering');
           });
         }, 300);
       };
@@ -409,18 +408,20 @@ window.LoadingAnimationExtension = {
       });
 
       const responseObserver = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          mutation.addedNodes.forEach((node) => {
-            if (node.nodeType === 1 && node.classList.contains('vfrc-message--ai')) {
+        for (const mutation of mutations) {
+          for (const node of mutation.addedNodes) {
+            if (node.nodeType === 1 && node.classList && node.classList.contains('vfrc-message--ai')) {
               if (intervalId) clearInterval(intervalId);
               clearTimeout(animationTimeoutId);
               spinnerAnimationContainer.classList.add('hide');
               responseObserver.disconnect();
+              return;
             }
-          });
-        });
+          }
+        }
       });
-      responseObserver.observe(document.body, {
+      const targetElement = element?.parentElement || element || document.body;
+      responseObserver.observe(targetElement, {
         childList: true,
         subtree: true
       });
