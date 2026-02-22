@@ -42,7 +42,7 @@
   /* 3) SYSTEM BUTTONS (start new chat, cancel) */
   /* 3.1) Shared button properties */
   --btn-font-size: 14px;
-  --btn-font-weight: 600;
+  --btn-font-weight: 700;
   --btn-letter-spacing: 0.05em;
   --btn-padding: 16px;
   --btn-radius: 15px;
@@ -157,8 +157,8 @@
   --main-btn-gap: 8px;
 
   /* 8.2) Button typography and geometry */
-  --main-btn-font-size: 13.5px;
-  --main-btn-font-weight: 600;
+  --main-btn-font-size: 14px;
+  --main-btn-font-weight: 700;
   --main-btn-letter-spacing: .05em;
   --main-btn-height: 40px;
   --main-btn-padding: 16px 10px;
@@ -216,7 +216,7 @@
 
   /* 10.3) Card header and description */
   --card-header-size: 14px;
-  --card-header-weight: 600;
+  --card-header-weight: 700;
   --card-header-color: #000000;
   --card-header-spacing: 0.02em;
   --card-header-padding: 0;
@@ -235,8 +235,8 @@
   --card-btn-height: 40px;
   --card-btn-radius: 15px;
   --card-btn-padding-top: 2px;
-  --card-btn-font-size: 13.5px;
-  --card-btn-font-weight: 600;
+  --card-btn-font-size: 14px;
+  --card-btn-font-weight: 700;
   --card-btn-spacing: 0.05em;
   --card-btn-line-height: normal;
   --card-btn-shadow: none;
@@ -400,9 +400,9 @@
   /* 15) PRIVACY POLICY WINDOW */
   /* 15.1) Privacy title */
   --privacy-title-size: 17px;
-  --privacy-title-weight: 600;
+  --privacy-title-weight: 700;
   --privacy-title-line-height: 1.5;
-  --privacy-title-color: #000000;
+  --privacy-title-color: #E47D2D;
   --privacy-title-align: center;
   --privacy-title-spacing: -0.01em;
   --privacy-title-margin: 0 0 12px 0;
@@ -425,7 +425,7 @@
   /* 15.4) Privacy buttons - Shared properties */
   --privacy-btn-radius: 15px;
   --privacy-btn-padding: 12px 16px;
-  --privacy-btn-font-size: 13.5px;
+  --privacy-btn-font-size: 14px;
   --privacy-btn-weight: 700;
   --privacy-btn-spacing: 0.05em;
   --privacy-btn-line-height: 1.4;
