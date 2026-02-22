@@ -458,4 +458,7 @@
   --chat-bg-color: #FFFFFF;
   --chat-radius: 25px;
   --chat-shadow: 0 0 0 1px rgba(22, 26, 30, 0.06), 0 8px 80px rgba(22, 26, 30, 0.16);
+
+  /* 17) LOADING ANIMATION SPINNER */
+  --spinner-color: #E47D2D;
 }
