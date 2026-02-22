@@ -341,7 +341,7 @@ window.LoadingAnimationExtension = {
 
       const spinnerAnimationContainer = document.createElement('div');
       spinnerAnimationContainer.className = 'rotating-point-spinner';
-      spinnerAnimationContainer.style.setProperty('--spinner-point-colour');
+      spinnerAnimationContainer.style.setProperty('--spinner-point-colour', '#E47D2D');
 
       loadingBox.appendChild(spinnerAnimationContainer);
 
@@ -394,7 +394,8 @@ window.LoadingAnimationExtension = {
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           mutation.removedNodes.forEach((node) => {
-            if (node === container || node.contains(container)) {
+            /* Tady je upravený řádek s nodeType === 1 */
+            if (node === container || (node.nodeType === 1 && node.contains(container))) {
               if (intervalId) clearInterval(intervalId);
               clearTimeout(animationTimeoutId);
               observer.disconnect();
