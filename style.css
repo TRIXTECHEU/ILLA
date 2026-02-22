@@ -85,17 +85,18 @@
   /* 4.1) Subheader container */
   --subheader-padding: 38px 20px 18px;
   --subheader-avatar-clip: circle(50% at 50% 50%);
-  --subheader-text-color: #656D75;
 
   /* 4.2) Title */
   --subheader-title-text: "Najdete to správné";
   --subheader-title-size: 14.5px;
   --subheader-title-weight: 700;
+  --subheader-title-color: #656D75;
   --subheader-title-align: center;
 
   /* 4.3) Description */
   --subheader-desc-text: "s pomocí naší AI asistentky";
   --subheader-desc-size: 13px;
+  --subheader-desc-color: #656D75;
   --subheader-desc-weight: normal;
   --subheader-desc-align: center;
 
